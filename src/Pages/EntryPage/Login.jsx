@@ -116,7 +116,16 @@ function CustomerLogin() {
 
     return (
         <div className='flex-col justify-center items-center'>
-        <form className="space-y-4">
+        <h2 className='font-mono'>
+        Sample Login Credentials:
+        <br />
+        <b>Email: harshjais78@gmail.com</b>
+        <br />
+        <b>Password: 123456</b>
+        </h2>
+
+
+        <form className="space-y-4 mt-5">
             <h2 className="text-xl font-bold text-gray-700">Customer Login</h2>
             <div>
                 <label className="block text-sm text-gray-600">Email</label>

@@ -3,9 +3,10 @@ import CartButton from 'Components/CartButton';
 import DetailedShopCard from 'Components/DetailedShopCard';
 import NavBar from 'Components/NavBar';
 import ProductItem from 'Components/ProductItem';
+import { handleAnonymousUser } from 'FirebaseAuth/Auth.mjs';
 import Cookies from 'js-cookie';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const IdContext = createContext({id:"",vendorId:"",pre_added_cart_items:new Map()});
 
@@ -22,15 +23,16 @@ export default function Product() {
     close: "",
     rating: 0,
     shop_img: "",
+    id: ""
   });
   const [isShopDetailLoaded, setShopDetailLoaded] = useState(false);
   const [isCartItemLoaded, setCartItemLoaded] = useState(false);
   const [error, setError] = useState(null);
+  let navigate = useNavigate();
 
   useEffect(() => {
     const fetchShopDetails = async () => {
       try {
-
         const response = await axios.post(`http://localhost:3000/stores/${id}`);
         setShopDetail(response.data);
         setProduct_id(response.data.product_id);
@@ -48,6 +50,7 @@ export default function Product() {
   useEffect(() => {
     const fetchStoredCartItems = async () => {
       try {
+        handleAnonymousUser(navigate)
         let user = Cookies.get('userToken');
         if(!user) return;
         let data = JSON.parse(user);
@@ -73,7 +76,7 @@ export default function Product() {
         {
           searchQuery.length === 0?
         <>
-        <div className="mx-auto w-[70%] pl-16 pr-16 pt-6">
+        <div className="mx-auto w-[100%] md:w-[70%] md:pl-16 md:pr-16 pt-6">
           <DetailedShopCard {...shopDetail} />
           <div className='p-6 shadow-xl mb-11 rounded-xl bg-white mt-11'>
           <h2 className="text-black opacity-90 text-2xl font-subheading my-11">Available Products</h2>

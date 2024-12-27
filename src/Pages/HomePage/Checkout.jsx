@@ -1,6 +1,7 @@
 import axios from 'axios';
 import AddressCard from 'Components/AddressCard'
 import NavBar from 'Components/NavBar'
+import { handleAnonymousUser } from 'FirebaseAuth/Auth.mjs';
 import Cookies from 'js-cookie';
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -19,8 +20,10 @@ export default function Checkout() {
   let navigate = useNavigate();
 
   useEffect(() => {
+
     const loadShopDetails = async (cartItemsStored) => {
       try {
+        handleAnonymousUser(navigate)
         let obj = []
         for (const shopId in cartItemsStored) {
           let item = {};
@@ -47,7 +50,6 @@ export default function Checkout() {
         let user = Cookies.get('userToken');
         if (!user) return;
         let data = JSON.parse(user);
-        console.log("uid",data.uid);
 
         const response = await axios.post(`http://localhost:3000/user/${data.uid}`);
         loadShopDetails(response.data.cart_items || {})
@@ -61,8 +63,8 @@ export default function Checkout() {
   }, []);
 
   async function placeOrder(){
-    if (!selectedAddress) {
-      setPopupVisible(true); // Show popup if no address is selected
+    if (selectedAddress == null) {
+      setPopupVisible(true); 
       return;
     }
     let user = Cookies.get('userToken');
@@ -83,7 +85,7 @@ export default function Checkout() {
       <div className='w-screen h-screen flex flex-col mb-24'>
       <NavBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         { searchQuery.length === 0 ?
-            <>
+            <> 
         <div className='max-h-[30%] pb-6'>
         <AddressCard setSelectedAddress={setSelectedAddress} selectedAddress={ selectedAddress} />
         </div>

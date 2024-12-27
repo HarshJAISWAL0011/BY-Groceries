@@ -1,10 +1,11 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword  } from "firebase/auth";
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const firebaseConfig = JSON.parse(process.env.REACT_APP_FIRESTORE_SECRET);
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-
 
 
 export async function createNewUser(email, password){
@@ -38,4 +39,14 @@ export async function signin(email, password){
     reject(new Error(errorMessage)); 
   });
 });
+}
+
+
+export function handleAnonymousUser(navigate){
+  
+  let user = Cookies.get('userToken');
+  if(!user || user.length === 0){
+    navigate('/');
+  }
+
 }

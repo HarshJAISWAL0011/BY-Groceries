@@ -2,7 +2,9 @@ import axios from 'axios';
 import CartButton from 'Components/CartButton';
 import NavBar from 'Components/NavBar';
 import ShopCard from 'Components/ShopCard';
+import { handleAnonymousUser } from 'FirebaseAuth/Auth.mjs';
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 export default function Catalog() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -30,12 +32,13 @@ function ShowItems() {
   const [items, setItems] = useState([]); // State to store fetched data
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
+  let navigate = useNavigate();
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axios.post("http://localhost:3000/stores"); 
-        console.log(response.data)
+        handleAnonymousUser(navigate)
+        const response = await axios.post("http://localhost:3000/stores");  
         setItems(response.data);  
         setLoading(false);
       } catch (err) {

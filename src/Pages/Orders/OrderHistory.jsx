@@ -2,16 +2,20 @@ import axios from 'axios';
 import NavBar from 'Components/NavBar';
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import { handleAnonymousUser } from 'FirebaseAuth/Auth.mjs';
+import { useNavigate } from 'react-router-dom';
 
 export default function OrderHistory() {
   const [orderHistory, setOrderHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  let navigate = useNavigate();
 
   useEffect(() => {
 
     const fetchOrderHistory = async () => {
       try {
+        handleAnonymousUser(navigate)
         const userToken = Cookies.get('userToken');
         if (!userToken) return;
 
@@ -74,7 +78,12 @@ function OrderGroup({ date, orders }) {
   );
 }
 
-function OrderItem({ img_url, item_name, price, quantity, description,total }) {
+function OrderItem({ img_url, item_name, price, quantity, description,total,shopId }) {
+  let navigate = useNavigate();
+  const goToShop=()=> {
+    navigate(`/shop/${shopId}`);
+
+  }
   return (
     <div className='flex items-center bg-white rounded-lg p-4 shadow-sm'>
       <img
@@ -83,7 +92,7 @@ function OrderItem({ img_url, item_name, price, quantity, description,total }) {
         className='w-20 h-20 object-cover rounded-lg mr-4'
       />
       <div className='flex flex-col flex-grow'>
-        <h3 className='text-base font-semibold'>{item_name}</h3>
+        <h3 className='text-base font-semibold cursor-pointer' onClick={goToShop}>{item_name}</h3>
         <p className='text-sm text-gray-600'>{description}</p>
         <div className='mt-2'>
           <span className='font-medium'>Quantity:</span> {quantity}

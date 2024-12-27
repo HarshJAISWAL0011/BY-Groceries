@@ -156,16 +156,16 @@ function VendorSignup() {
 
 function CustomerSignup() {
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
     
   const setCookie = (token) => {
-    Cookies.set("userToken", token, { expires: 7 }); // Cookie expires in 7 days
+    Cookies.set("userToken", token, { expires: 7 });
   };
 
-  // Handle form submission for customer signup
   const handleSignup = async (event) => {
     event.preventDefault();
   
@@ -175,16 +175,16 @@ function CustomerSignup() {
     }
   
     try {
-      const response = await createNewUser(email, password);  // Calls createNewUser
+      const response = await createNewUser(email, password);
       
       if (!response) {  
         setError('Signup failed');
         return;
       }
-      console.log(response);
-      console.log("uid:",response.uid)
-      await axios.post(`http://localhost:3000/userdetails`,{
-        params: {name:email, id: response.uid}
+
+      await axios.post('http://localhost:3000/userdetails', {
+        id: name,
+        name: email
       });
 
        setCookie(JSON.stringify(response));
@@ -202,6 +202,8 @@ function CustomerSignup() {
         <label className="block text-sm text-gray-600 pb-1">Name</label>
         <input
           type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
           placeholder="Enter your name"
         />
