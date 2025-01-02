@@ -2,6 +2,7 @@ import axios from 'axios';
 import CartButton from 'Components/CartButton';
 import NavBar from 'Components/NavBar';
 import ShopCard from 'Components/ShopCard';
+import { baseUrl } from 'Constants';
 import { handleAnonymousUser } from 'FirebaseAuth/Auth.mjs';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
@@ -38,7 +39,7 @@ function ShowItems() {
     const fetchItems = async () => {
       try {
         handleAnonymousUser(navigate)
-        const response = await axios.post("http://localhost:3000/stores");  
+        const response = await axios.post(`${baseUrl}stores`);  
         setItems(response.data);  
         setLoading(false);
       } catch (err) {

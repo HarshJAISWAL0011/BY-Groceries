@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import SearchResultsPage from 'Pages/Search/SearchResultsPage';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { baseUrl } from 'Constants';
 
 export default function NavBar({searchQuery, setSearchQuery}) {
   let navigate = useNavigate();
@@ -16,7 +17,7 @@ export default function NavBar({searchQuery, setSearchQuery}) {
         let user = Cookies.get('userToken');
         if (!user) return;
         let data = JSON.parse(user);
-        const response = await axios.post(`http://localhost:3000/user/${data.uid}`);
+        const response = await axios.post(`${baseUrl}user/${data.uid}`);
          setName(response.data.name);
        
       } catch (err) {
@@ -30,7 +31,7 @@ export default function NavBar({searchQuery, setSearchQuery}) {
         if (!user) return;
         let data = JSON.parse(user);
 
-        const response = await axios.post(`http://localhost:3000/user/${data.uid}`);
+        const response = await axios.post(`${baseUrl}user/${data.uid}`);
         loadShopDetails(response.data.cart_items || {})
       } catch (err) {
         console.error("Error fetching stored cart items:", err);

@@ -12,9 +12,9 @@ import Signup from 'Pages/EntryPage/Signup';
 import SearchResultsPage from 'Pages/Search/SearchResultsPage';
 import OrderHistory from 'Pages/Orders/OrderHistory';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
+    <App/>
   
     <Routes>
         <Route path="/" element={<Login />} />

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { data, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { baseUrl } from 'Constants';
 
 export default function Signup() {
   return (
@@ -182,7 +183,7 @@ function CustomerSignup() {
         return;
       }
 
-      await axios.post('http://localhost:3000/userdetails', {
+      await axios.post(`${baseUrl}userdetails`, {
         id: name,
         name: email
       });

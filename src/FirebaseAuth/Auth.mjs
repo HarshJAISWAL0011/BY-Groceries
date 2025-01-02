@@ -1,12 +1,33 @@
+import { baseUrl } from 'Constants';
 import { initializeApp } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword  } from "firebase/auth";
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
 
-const firebaseConfig = JSON.parse(process.env.REACT_APP_FIRESTORE_SECRET);
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+let app = null;
+let auth = null;
 
+ async function fbConfig() {
+  try {
+    const response = await fetch(`${baseUrl}data`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Firebase config: ${response.statusText}`);
+    }
+    const firebaseConfig = await response.json();
+     app = initializeApp(JSON.parse(firebaseConfig));
+    auth = getAuth(app);
+  } catch (error) {
+    console.error("Error initializing Firebase:", error.message);
+    throw error;
+  }
+}
+
+ export async function fillData() {
+  if (!app || !auth) {
+    await fbConfig();
+  }
+ 
+}
+fillData()
 
 export async function createNewUser(email, password){
     return new Promise((resolve, reject) => {

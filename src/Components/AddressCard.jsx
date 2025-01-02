@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ProductItem from "./ProductItem";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { baseUrl } from "Constants";
 
 export default function AddressCard({ selectedAddress ,setSelectedAddress}) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -21,11 +22,9 @@ export default function AddressCard({ selectedAddress ,setSelectedAddress}) {
       let user = Cookies.get('userToken');
       if(!user) return;
       let data = JSON.parse(user);
-       const response = await axios.get(`http://localhost:3000/address/${data.uid}`);
-       console.log(response.data)
-       let val = response.data.addresses || [];
-       console.log(val)
-       setAddresses(val);
+       const response = await axios.get(`${baseUrl}address/${data.uid}`);
+        let val = response.data.addresses || [];
+        setAddresses(val);
     }
     getAddress();
   },[])
@@ -42,7 +41,7 @@ export default function AddressCard({ selectedAddress ,setSelectedAddress}) {
      let user = Cookies.get('userToken');
      if(!user) return;
      let data = JSON.parse(user);
-    axios.post(`http://localhost:3000/address`,{
+    axios.post(`${baseUrl}address`,{
       addresses: [...addresses,formData],
       id: data.uid
     });
@@ -127,8 +126,7 @@ export default function AddressCard({ selectedAddress ,setSelectedAddress}) {
                 ${selectedAddress  === index? " border-s-orange-400 border-4": ""} 
                 shadow-md rounded-lg p-4 bg-white`} onClick={()=>{
                     setSelectedAddress(index)
-                    console.log("selected")
-            }}
+             }}
           >
             <h3 className="font-semibold text-lg">{address.name}</h3>
             <p className="text-sm text-gray-600">Age: {address.age}</p>

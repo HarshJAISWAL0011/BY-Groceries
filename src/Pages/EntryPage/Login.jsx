@@ -153,7 +153,6 @@ function CustomerLogin() {
                 onClick={async(e)=>{  
                     e.preventDefault()
                     let response= await signin(email,password)
-                    console.log(response,response.uid)
                     if(response){
                       Cookies.set("userToken", JSON.stringify(response), { expires: 7 });
                      navigate('/home')

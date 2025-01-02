@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import NavBar from 'Components/NavBar';
 import { useNavigate } from 'react-router-dom';
+import { baseUrl } from 'Constants';
 
 export default function SearchResultsPage({searchQuery, setSearchQuery}) {
 
@@ -30,11 +31,10 @@ export default function SearchResultsPage({searchQuery, setSearchQuery}) {
     const fetchSearchResults = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('http://localhost:3000/search', { 
+        const response = await axios.get(`${baseUrl}search`, { 
           params: { query: debouncedQuery },
         });
-        console.log(response.data);
-        setSearchResults(response.data);
+         setSearchResults(response.data);
       } catch (error) {
         console.error('Error fetching search results:', error);
       } finally {

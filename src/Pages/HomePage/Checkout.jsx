@@ -1,6 +1,7 @@
 import axios from 'axios';
 import AddressCard from 'Components/AddressCard'
 import NavBar from 'Components/NavBar'
+import { baseUrl } from 'Constants';
 import { handleAnonymousUser } from 'FirebaseAuth/Auth.mjs';
 import Cookies from 'js-cookie';
 import React, { createContext, useContext, useEffect, useState } from 'react'
@@ -27,8 +28,8 @@ export default function Checkout() {
         let obj = []
         for (const shopId in cartItemsStored) {
           let item = {};
-          const response = await axios.post(`http://localhost:3000/stores/${shopId}`);
-          const productDetailArray = await axios.post(`http://localhost:3000/products/${response.data['product_id']}`);
+          const response = await axios.post(`${baseUrl}stores/${shopId}`);
+          const productDetailArray = await axios.post(`${baseUrl}products/${response.data['product_id']}`);
           let pDetail = []
           for (let it of productDetailArray.data.items) {
             if (cartItemsStored[shopId][it['product_id']])
@@ -51,7 +52,7 @@ export default function Checkout() {
         if (!user) return;
         let data = JSON.parse(user);
 
-        const response = await axios.post(`http://localhost:3000/user/${data.uid}`);
+        const response = await axios.post(`${baseUrl}user/${data.uid}`);
         loadShopDetails(response.data.cart_items || {})
       } catch (err) {
         console.error("Error fetching stored cart items:", err);
@@ -71,7 +72,7 @@ export default function Checkout() {
     if (!user) return;
     let data = JSON.parse(user);
 
-     await axios.post(`http://localhost:3000/placeorder/${data.uid}`,{
+     await axios.post(`${baseUrl}placeorder/${data.uid}`,{
       orderdetails: cardDetails
     });
     navigate('/orderhistory/')
@@ -171,8 +172,7 @@ function ProductItem({ img_url, item_name, price, unit, description, product_id,
       if (doc.id !== vendorId) return doc;
       const updatedProductDetails = doc.productDetails.map((item) => {
         if (item.product_id === product_id) {
-          console.log(item.product_id, product_id)
-          axios.post(`http://localhost:3000/addtocart`,{
+           axios.post(`${baseUrl}addtocart`,{
             customerId:obj.uid, product_id, quantity:(quantity+1), vendorId
           });
           return { ...item, quantity: item.quantity + 1 };
@@ -196,7 +196,7 @@ function ProductItem({ img_url, item_name, price, unit, description, product_id,
         const updatedProductDetails = doc.productDetails.filter((it) =>
           it.product_id !== product_id
         );
-        axios.post(`http://localhost:3000/addtocart`,{
+        axios.post(`${baseUrl}addtocart`,{
           customerId:obj.uid, product_id, quantity:0, vendorId
         });
 
@@ -211,7 +211,7 @@ function ProductItem({ img_url, item_name, price, unit, description, product_id,
         if (doc.id !== vendorId) return doc;
         const updatedProductDetails = doc.productDetails.map((item) => {
           if (item.product_id === product_id) {
-            axios.post(`http://localhost:3000/addtocart`,{
+            axios.post(`${baseUrl}addtocart`,{
               customerId:obj.uid, product_id, quantity:(quantity-1), vendorId
             });
             return { ...item, quantity: item.quantity - 1 };

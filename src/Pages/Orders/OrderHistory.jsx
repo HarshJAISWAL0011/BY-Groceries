@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { handleAnonymousUser } from 'FirebaseAuth/Auth.mjs';
 import { useNavigate } from 'react-router-dom';
+import { baseUrl } from 'Constants';
 
 export default function OrderHistory() {
   const [orderHistory, setOrderHistory] = useState([]);
@@ -20,17 +21,15 @@ export default function OrderHistory() {
         if (!userToken) return;
 
         const userData = JSON.parse(userToken);
-        console.log('Fetching order history for user:', userData);
-
-        const response = await axios.post(`http://localhost:3000/orders/${userData.uid}`);
+ 
+        const response = await axios.post(`${baseUrl}orders/${userData.uid}`);
         const fetchedData = response.data || [];
         const formattedData = fetchedData.map((group) => ({
           date: group.time._seconds * 1000,
           orders: group.data,
         }));
 
-        console.log('Formatted Order History:', formattedData);
-        setOrderHistory(formattedData);
+         setOrderHistory(formattedData);
       } catch (err) {
         console.error("Error fetching order history:", err);
       } finally {

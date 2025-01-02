@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { baseUrl } from 'Constants';
 import Cookies from 'js-cookie';
 import React, { useState } from 'react'
 
@@ -10,7 +11,7 @@ export default function ProductItem({img_url,item_name,price, unit, description,
       const token = Cookies.get("userToken");
       let obj = JSON.parse(token);
       if(!token) return
-      axios.post(`http://localhost:3000/addtocart`,{
+      axios.post(`${baseUrl}addtocart`,{
           customerId:obj.uid, product_id, quantity:(quantity+1), vendorId
         });
       return quantity+1
@@ -20,11 +21,8 @@ export default function ProductItem({img_url,item_name,price, unit, description,
       setQuantity((quantity)=>{
       const token = Cookies.get("userToken");
       let obj = JSON.parse(token);
-      // if(!token) return
-      console.log({
-        customerId:obj.uid, product_id, quantity:(Math.max(0,quantity-1)), vendorId
-      })
-      axios.post(`http://localhost:3000/addtocart`,{
+   
+      axios.post(`${baseUrl}addtocart`,{
           customerId:obj.uid, product_id, quantity:(Math.max(0,quantity-1)), vendorId
         });
       return Math.max(0,quantity-1)
